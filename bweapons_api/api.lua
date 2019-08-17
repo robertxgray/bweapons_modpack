@@ -538,6 +538,16 @@ function bweapons.register_weapon(def)
             --Fire sound
             if def.fire_sound then minetest.sound_play(def.fire_sound, {object=user, gain=fire_sound_gain, max_hear_distance=2*64}) end
 
+            --Add an item to the user inventory, if defined
+            if def.return_item then
+                if inv:room_for_item("main", {name = def.return_item}) then
+                    inv:add_item("main", {name = def.return_item})
+                else
+                    local obj = minetest.add_item({x = playerpos.x, y = playerpos.y + 1.5, z = playerpos.z}, def.return_item)
+                    obj:setvelocity({x = dir.x * 5, y = dir.y * 5, z = dir.z * 5})
+                end
+            end
+
             --Custom function executed on fire
             if def.on_fire then
                 def.on_fire(itemstack, user, pointed_thing)

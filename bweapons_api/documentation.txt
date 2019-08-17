@@ -28,6 +28,7 @@ bweapons.register_weapon({
     max_charge = 350000,                                                --Maximum charge that the weapon holds, in technic EU.
     ammo_type = "my_weapons_pack:rifle_round",                          --Id of an inventory item that will be used as ammo. Ammo can be easily registered with bweapons.register_ammo().
     ammo_per_shot = 1,                                                  --How much ammo should be used per shot.
+    return_item = "default:stone",                                      --Adds an item to the user inventory, if defined. If no space is left, the item is dropped on ground instead.
 
     --Weapon configuration
     hitscan = true,                                                     --Instantly trace shots to the target, use in weapons like firearms, lasers, etc.
