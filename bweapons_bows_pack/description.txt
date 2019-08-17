@@ -1,1 +1,1 @@
-A firearms pack for bweapons_api
+A bow pack for bweapons_api
