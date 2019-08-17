@@ -202,6 +202,33 @@ local function register_projectile(def)
     })
 end
 
+local function bweapons_repair(itemstack, player, old_craft_grid, craft_inv, name, repair_with, uses, repair_uses)
+    if itemstack == nil or itemstack:get_name() ~= name then return end
+    local w_count = 0
+    local r_count = 0
+    local modstack
+
+    for _,v in pairs(old_craft_grid) do
+        if v:get_name() == name then
+            w_count = w_count + 1
+            modstack = v
+        elseif v:get_name() == repair_with then
+            r_count = r_count + 1
+        end
+    end
+
+    if w_count == 1 and r_count == 1 then
+        local wear = modstack:get_wear()
+        if wear > 0 then
+            wear = wear - (65535/uses * repair_uses)
+            if wear < 0 then wear = 0 end
+            modstack:set_wear(wear)
+            return modstack
+        end
+    end
+
+end
+
 function bweapons.register_weapon(def)
 
     --Stop registration if mod requirements are not met or not enough definition fields
@@ -238,6 +265,7 @@ function bweapons.register_weapon(def)
     local hit_flare_glow = 0
     local ammo_type = def.ammo_type or "default:stone"
     local ammo_per_shot = def.ammo_per_shot or 1
+    local repair_uses = def.repair_uses or 8
     local hit_particle_velocity = def.hit_particle_velocity or 2
     local hit_particle_gravity = def.hit_particle_gravity or -10
     local hit_particle_size = def.hit_particle_size or 3
@@ -283,9 +311,14 @@ function bweapons.register_weapon(def)
     local projectile_visual_size = def.projectile_visual_size or 1
 
     local on_refill = nil
+    local wear_represents = nil
 
     if minetest.get_modpath("technic") then
         on_refill = technic.refill_RE_charge
+    end
+
+    if technic_powered then
+        wear_represents = "technic_RE_charge"
     end
 
     --Make a projectile definition and register projectile for the weapon, if hitscan=false
@@ -336,7 +369,7 @@ function bweapons.register_weapon(def)
         inventory_image = def.texture,
         wield_scale = 1,
         stack_max = 1,
-        wear_represents = "technic_RE_charge",
+        wear_represents = wear_represents,
         on_refill = on_refill,
         on_use = function(itemstack, user, pointed_thing)
 
@@ -596,11 +629,16 @@ function bweapons.register_weapon(def)
 
         minetest.register_on_craft(
             function(itemstack, player, old_craft_grid, craft_inv)
-                if itemstack:get_name() ~= def.name then return end
-                    for k,v in pairs(old_craft_grid) do
-                        print(k, v:get_name())
-                    end
+                local stack = bweapons_repair(itemstack, player, old_craft_grid, craft_inv, def.name, def.repair_with, uses, repair_uses)
+                return stack
             end)
+
+        minetest.register_craft_predict(
+            function(itemstack, player, old_craft_grid, craft_inv)
+                local stack = bweapons_repair(itemstack, player, old_craft_grid, craft_inv, def.name, def.repair_with, uses, repair_uses)
+                return stack
+            end)
+
     end
 
 end

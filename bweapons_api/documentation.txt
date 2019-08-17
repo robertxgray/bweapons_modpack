@@ -87,6 +87,10 @@ bweapons.register_weapon({
     drop = "default:stone",                                             --Drop something on successful hit
     drop_chance = 0.8,                                                  --Chance of drop (1 is always drop, 0 is never)
 
+    --Repair
+    repair_with = "default:stone",                                      --Combine the tool with this item on crafting grid (shapeless) to repair it by amount of uses specified below
+    repair_uses = 8,                                                    --Amount of uses to repair with "repair with" option
+
     --Custom functions
     on_fire = function(itemstack, user, pointed_thing)
             print("Fired weapon")
@@ -151,6 +155,7 @@ bweapons.register_weapon({
     max_charge = 350000,
     ammo_type = "my_weapons_pack:rifle_round",
     ammo_per_shot = 1,
+    return_item = "default:stone", 
     hitscan = true,
     distance = 100,
     penetration = 2,
@@ -196,6 +201,8 @@ bweapons.register_weapon({
     projectile_visual_size = 1,
     drop = "default:stone",
     drop_chance = 0.8,
+    repair_with = "default:stone",
+    repair_uses = 8,
     on_fire = function(itemstack, user, pointed_thing)
             print("Fired weapon")
         end,
