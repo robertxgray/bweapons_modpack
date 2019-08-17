@@ -282,6 +282,12 @@ function bweapons.register_weapon(def)
     local projectile_glow = def.projectile_glow or false
     local projectile_visual_size = def.projectile_visual_size or 1
 
+    local on_refill = nil
+
+    if minetest.get_modpath("technic") then
+        on_refill = technic.refill_RE_charge
+    end
+
     --Make a projectile definition and register projectile for the weapon, if hitscan=false
     if not hitscan then
         local projectiledef = {
@@ -331,7 +337,7 @@ function bweapons.register_weapon(def)
         wield_scale = 1,
         stack_max = 1,
         wear_represents = "technic_RE_charge",
-        on_refill = technic.refill_RE_charge,
+        on_refill = on_refill,
         on_use = function(itemstack, user, pointed_thing)
 
             if not user then return end
@@ -575,6 +581,26 @@ function bweapons.register_weapon(def)
     --Register tool as technic_powered
     if technic_powered then
         technic.register_power_tool(def.name, max_charge)
+    end
+
+        --Register a new craft to repair the tool with it, if defined
+    if def.repair_with then
+        minetest.register_craft({
+            type = "shapeless",
+            output = def.name,
+            recipe = {
+                def.name,
+                def.repair_with,
+            },
+        })
+
+        minetest.register_on_craft(
+            function(itemstack, player, old_craft_grid, craft_inv)
+                if itemstack:get_name() ~= def.name then return end
+                    for k,v in pairs(old_craft_grid) do
+                        print(k, v:get_name())
+                    end
+            end)
     end
 
 end
