@@ -27,13 +27,16 @@ Also, you can see already defined weapon packs for reference, however, keep in m
 ## Limitations
 Automatic weapons are not implemented for the sake of saving server perfomance (it'd be required to test current input of every player every server step). Right now weapons are purely on_use() based and has no background perfomance costs.
 
-
 ## Requirements
 **Minetest 5.0.0+**
 
 Mods:
 - default
 - technic (optional)
+
+## Recommended mods
+- Technic, as many of weapons in this modpack are using technic materials and technic energy system
+- crafting_guide, to see available crafting recipies for new items
 
 ## Mods in modpack
 ### bweapons_api
