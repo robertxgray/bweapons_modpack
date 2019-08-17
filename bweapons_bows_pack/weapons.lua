@@ -30,7 +30,6 @@ bweapons.register_weapon({
     projectile_visual_size = 0.4,
     drop = "bweapons_bows_pack:arrow",
     drop_chance = 0.5,
-    repair_with = "default:stone",
     recipe={
         {
             {'', 'group:wood', 'farming:string'},
