@@ -29,6 +29,8 @@ bweapons.register_weapon({
     ammo_type = "my_weapons_pack:rifle_round",                          --Id of an inventory item that will be used as ammo. Ammo can be easily registered with bweapons.register_ammo().
     ammo_per_shot = 1,                                                  --How much ammo should be used per shot.
     return_item = "default:stone",                                      --Adds an item to the user inventory, if defined. If no space is left, the item is dropped on ground instead.
+    unbreakable = false,                                                --Item doesn't break when its durability is depleted, and cannot be used until charged/repaired. Has no effect
+                                                                        --if technic_powered is true (since this is default behavior in technic mod anyway)
 
     --Weapon configuration
     hitscan = true,                                                     --Instantly trace shots to the target, use in weapons like firearms, lasers, etc.
@@ -155,7 +157,8 @@ bweapons.register_weapon({
     max_charge = 350000,
     ammo_type = "my_weapons_pack:rifle_round",
     ammo_per_shot = 1,
-    return_item = "default:stone", 
+    return_item = "default:stone",
+    unbreakable = false,
     hitscan = true,
     distance = 100,
     penetration = 2,

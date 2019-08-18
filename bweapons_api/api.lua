@@ -378,6 +378,9 @@ function bweapons.register_weapon(def)
             local playername = user:get_player_name()
             local playerpos = user:getpos()
 
+            --Return if tool is unbreakable and has less durability remaining than one use
+            if not technic_powered and def.unbreakable and (65535 - itemstack:get_wear()) < (65535 / uses) then return end
+
             --Check if weapon is cooling down
             if players[playername]["reloading"] == true then
                 if def.reload_sound then minetest.sound_play(def.reload_sound, {object=user, gain=reload_sound_gain, max_hear_distance=2*64}) end
@@ -409,6 +412,7 @@ function bweapons.register_weapon(def)
                 inv:remove_item("main", {name=ammo_type, count=ammo_per_shot})
                 local wear = itemstack:get_wear()
                 wear = wear + (65535/uses)
+                if def.unbreakable and wear > 65535 then wear = 65535 end
                 itemstack:set_wear(wear)
             end
 
