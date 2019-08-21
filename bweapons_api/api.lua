@@ -237,15 +237,13 @@ function bweapons.register_weapon(def)
         return
     end
 
-    if def.name == nil or def.description == nil or def.texture == nil or
-        (not def.technic_powered and not def.ammo_type) then
+    if def.name == nil or def.description == nil or def.texture == nil then
         print("Missing fields in weapon registration! Check api documentation")
         return
     end
 
     --Setting defaults if fields are not defined in definition
     local damage = def.damage or 1
-    local technic_powered = def.technic_powered or false
     local max_charge = def.max_charge or 100000
     local uses = def.uses or 50
     local charge_per_use = max_charge/uses
@@ -263,7 +261,6 @@ function bweapons.register_weapon(def)
     local flare_glow = 0
     local hit_flare_size = def.hit_flare_size or 0.5
     local hit_flare_glow = 0
-    local ammo_type = def.ammo_type or "default:stone"
     local ammo_per_shot = def.ammo_per_shot or 1
     local repair_uses = def.repair_uses or 8
     local hit_particle_velocity = def.hit_particle_velocity or 2
@@ -317,7 +314,7 @@ function bweapons.register_weapon(def)
         on_refill = technic.refill_RE_charge
     end
 
-    if technic_powered then
+    if def.technic_powered then
         wear_represents = "technic_RE_charge"
     end
 
@@ -379,7 +376,7 @@ function bweapons.register_weapon(def)
             local playerpos = user:getpos()
 
             --Return if tool is unbreakable and has less durability remaining than one use
-            if not technic_powered and def.unbreakable and (65535 - itemstack:get_wear()) < (65535 / uses) then return end
+            if not def.technic_powered and def.unbreakable and (65535 - itemstack:get_wear()) < (65535 / uses) then return end
 
             --Check if weapon is cooling down
             if players[playername]["reloading"] == true then
@@ -397,19 +394,21 @@ function bweapons.register_weapon(def)
             end
 
             --Play sound and return if no ammo, metadata is nil or not enough charge
-            if technic_powered and not meta or technic_powered and meta.charge < charge_per_use or
-            not technic_powered and not inv:contains_item("main", {name=ammo_type, count=ammo_per_shot}) then
+            if def.technic_powered and not meta or def.technic_powered and meta.charge < charge_per_use or
+            not def.technic_powered and (def.ammo_type and not inv:contains_item("main", {name=def.ammo_type, count=ammo_per_shot})) then
                 if def.reload_sound then minetest.sound_play(def.reload_sound, {pos=playerpos, gain=reload_sound_gain, max_hear_distance=2*64}) end
                 return
             end
 
             --Reduce charge or remove ammo
-            if technic_powered then
+            if def.technic_powered then
                 meta.charge = meta.charge - charge_per_use
                 technic.set_RE_wear(itemstack, meta.charge, max_charge)
                 itemstack:set_metadata(minetest.serialize(meta))
             else
-                inv:remove_item("main", {name=ammo_type, count=ammo_per_shot})
+                if def.ammo_type then
+                    inv:remove_item("main", {name=def.ammo_type, count=ammo_per_shot})
+                end
                 local wear = itemstack:get_wear()
                 wear = wear + (65535/uses)
                 if def.unbreakable and wear > 65535 then wear = 65535 end
@@ -616,7 +615,7 @@ function bweapons.register_weapon(def)
     end
 
     --Register tool as technic_powered
-    if technic_powered then
+    if def.technic_powered then
         technic.register_power_tool(def.name, max_charge)
     end
 
