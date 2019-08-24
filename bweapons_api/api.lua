@@ -100,11 +100,12 @@ local function register_projectile(def)
                                                x = pos.x + delta.x * projectile_raycast_dist,
                                                y = pos.y + delta.y * projectile_raycast_dist,
                                                z = pos.z + delta.z * projectile_raycast_dist
-                                               }, true, false)
+                                               }, true, def.liquids_stop)
             local target = ray:next()
             if target and target.type == "node" then
                 local node = minetest.get_node_or_nil(minetest.get_pointed_thing_position(target, false))
-                if node and minetest.registered_nodes[node.name] and minetest.registered_nodes[node.name].walkable then
+                if node and minetest.registered_nodes[node.name] and (minetest.registered_nodes[node.name].walkable or
+                def.liquids_stop and minetest.registered_nodes[node.name].liquidtype ~= "none") then
                     if def.aoe then
                         bweapons.damage_aoe(def.damage, self.owner, self.previous_pos, def.aoe_radius)
                     end
@@ -356,6 +357,7 @@ function bweapons.register_weapon(def)
             drop_chance=drop_chance,
             on_hit=def.on_hit,
             on_timeout=def.on_timeout,
+            liquids_stop=liquids_stop,
             }
         register_projectile(projectiledef)
     end
@@ -434,7 +436,7 @@ function bweapons.register_weapon(def)
                         local target = ray:next()
                         local dropped = false
                         --Shoot everything except the user
-                        if target ~= nil and target.ref ~= user then
+                        if target and target.ref ~= user then
                             if aoe then
                                 bweapons.damage_aoe(damage, user, target.intersection_point, aoe_radius)
                             else
@@ -495,7 +497,7 @@ function bweapons.register_weapon(def)
                                 minetest.sound_play(def.hit_sound, {pos=target.intersection_point, gain=hit_sound_gain, max_hear_distance=2*64})
                             end
                         --Don't shoot yourself in the legs and increase penetration count
-                        elseif target ~= nil and target.ref == user then
+                        elseif target and target.ref == user then
                             j = j - 1
                         end
                         --Spawn a particle trail that leads to the last surface
