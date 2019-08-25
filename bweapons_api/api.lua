@@ -233,8 +233,13 @@ end
 function bweapons.register_weapon(def)
 
     --Stop registration if mod requirements are not met or not enough definition fields
-    if not minetest.get_modpath("technic") and def.technic_powered then
+    if def.has_durability and not minetest.get_modpath("technic") and def.requires_technic then
         print("Technic modpack is required for technic-powered weapons!")
+        return
+    end
+
+    if def.mana_per_use and not minetest.get_modpath("mana") then
+        print("Mana required for mana-based weapons!")
         return
     end
 
@@ -245,9 +250,9 @@ function bweapons.register_weapon(def)
 
     --Setting defaults if fields are not defined in definition
     local damage = def.damage or 1
-    local max_charge = def.max_charge or 100000
+    local technic_charge = def.technic_charge or 100000
     local uses = def.uses or 50
-    local charge_per_use = max_charge/uses
+    local technic_charge_per_use = technic_charge/uses
     local hitscan = def.hitscan or false
     local spawndist = def.spawn_distance or 1
     local shot_amount = def.shot_amount or 1
@@ -312,13 +317,10 @@ function bweapons.register_weapon(def)
     local on_refill = nil
     local wear_represents = "mechanical_wear"
 
-    if minetest.get_modpath("technic") then
+    if def.requires_technic then
         on_refill = technic.refill_RE_charge
-    end
-
-    if def.technic_powered then
         wear_represents = "technic_RE_charge"
-    elseif def.unbreakable then
+    elseif def.custom_charge then
         wear_represents = "bweapons_custom_charge"
     end
 
@@ -383,46 +385,58 @@ function bweapons.register_weapon(def)
             if not user then return end
 
             local playername = user:get_player_name()
-            local playerpos = user:getpos()
+            local inv = user:get_inventory()
 
-            --Return if tool is unbreakable and has less durability remaining than one use
-            if not def.technic_powered and def.unbreakable and (65535 - itemstack:get_wear()) < (65535 / uses) then return end
-
-            --Check if weapon is cooling down
-            if players[playername]["reloading"] == true then
-                if def.reload_sound then minetest.sound_play(def.reload_sound, {object=user, gain=reload_sound_gain, max_hear_distance=2*64}) end
+            --Return if player is reloading, not enough mana (if defined) or no ammo (if defined)
+            if
+            players[playername]["reloading"] or
+            def.mana_per_use and mana.get(playername) < def.mana_per_use or
+            def.ammo_type and not inv:contains_item("main", {name=def.ammo_type, count=ammo_per_shot})
+            then
+                if def.reload_sound then
+                    minetest.sound_play(def.reload_sound, {object=user, gain=reload_sound_gain, max_hear_distance=2*64})
+                end
                 return
             end
 
-            local meta = minetest.deserialize(itemstack:get_metadata())
-            local dir = user:get_look_dir()
-            local inv = user:get_inventory()
-            local vel = {x = 0, y = 0, z = 0}
+            if def.has_durability then
+                local meta = minetest.deserialize(itemstack:get_metadata())
+                if
+                def.requires_technic and not meta or
+                def.requires_technic and meta.charge < technic_charge_per_use or
+                not def.requires_technic and def.custom_charge and (65535 - itemstack:get_wear()) < (65535 / uses)
+                then
+                    if def.reload_sound then
+                        minetest.sound_play(def.reload_sound, {object=user, gain=reload_sound_gain, max_hear_distance=2*64})
+                    end
+                    return
+                end
 
+                if def.requires_technic then
+                    meta.charge = meta.charge - technic_charge_per_use
+                    technic.set_RE_wear(itemstack, meta.charge, technic_charge)
+                    itemstack:set_metadata(minetest.serialize(meta))
+                else
+                    local wear = itemstack:get_wear()
+                    wear = wear + (65535/uses)
+                    if def.custom_charge and wear > 65535 then wear = 65535 end
+                    itemstack:set_wear(wear)
+                end
+            end
+
+            if def.ammo_type then
+                inv:remove_item("main", {name=def.ammo_type, count=ammo_per_shot})
+            end
+
+            if def.mana_per_use then
+                mana.subtract(playername, def.mana_per_use)
+            end
+
+            local playerpos = user:getpos()
+            local dir = user:get_look_dir()
+            local vel = {x = 0, y = 0, z = 0}
             if combine_velocity then
                 vel = user:get_player_velocity()
-            end
-
-            --Play sound and return if no ammo, metadata is nil or not enough charge
-            if def.technic_powered and not meta or def.technic_powered and meta.charge < charge_per_use or
-            not def.technic_powered and (def.ammo_type and not inv:contains_item("main", {name=def.ammo_type, count=ammo_per_shot})) then
-                if def.reload_sound then minetest.sound_play(def.reload_sound, {pos=playerpos, gain=reload_sound_gain, max_hear_distance=2*64}) end
-                return
-            end
-
-            --Reduce charge or remove ammo
-            if def.technic_powered then
-                meta.charge = meta.charge - charge_per_use
-                technic.set_RE_wear(itemstack, meta.charge, max_charge)
-                itemstack:set_metadata(minetest.serialize(meta))
-            else
-                if def.ammo_type then
-                    inv:remove_item("main", {name=def.ammo_type, count=ammo_per_shot})
-                end
-                local wear = itemstack:get_wear()
-                wear = wear + (65535/uses)
-                if def.unbreakable and wear > 65535 then wear = 65535 end
-                itemstack:set_wear(wear)
             end
 
             --Hitscan type, implemented in-place
@@ -625,8 +639,8 @@ function bweapons.register_weapon(def)
     end
 
     --Register tool as technic_powered
-    if def.technic_powered then
-        technic.register_power_tool(def.name, max_charge)
+    if def.requires_technic then
+        technic.register_power_tool(def.name, technic_charge)
     end
 
         --Register a new craft to repair the tool with it, if defined
