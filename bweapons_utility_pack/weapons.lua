@@ -2,6 +2,7 @@ bweapons.register_weapon({
     name = "bweapons_utility_pack:torch_bow",
     description = "Torch Bow",
     texture = "bweapons_utility_pack_torch_bow.png",
+    has_durability = true,
     uses = 256,
     ammo_type = "default:torch",
     tool_repair = true,
