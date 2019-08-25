@@ -25,18 +25,20 @@ bweapons.register_weapon({
     --Ammo or energy
     uses = 128,                                                         --Amount of uses until the tool breaks/needs to be recharged by technic
     technic_powered = false,                                            --Should weapon be energy-powered, instead of consuming ammo each shot. Requires technic modpack
-    max_charge = 350000,                                                --Maximum charge that the weapon holds, in technic EU.
-    ammo_type = "my_weapons_pack:rifle_round",                          --Id of an inventory item that will be used as ammo. Ammo can be easily registered with bweapons.register_ammo().
-    ammo_per_shot = 1,                                                  --How much ammo should be used per shot.
+    max_charge = 350000,                                                --Maximum charge that the weapon holds, in technic EU
+    ammo_type = "my_weapons_pack:rifle_round",                          --Id of an inventory item that will be used as ammo. Ammo can be easily registered with bweapons.register_ammo()
+    ammo_per_shot = 1,                                                  --How much ammo should be used per shot
     return_item = "default:stone",                                      --Adds an item to the user inventory, if defined. If no space is left, the item is dropped on ground instead.
     unbreakable = false,                                                --Item doesn't break when its durability is depleted, and cannot be used until charged/repaired. Has no effect
-                                                                        --if technic_powered is true (since this is default behavior in technic mod anyway)
+                                                                        --if technic_powered is true (since this is default behavior in technic mod anyway). Also prevents items from being
+                                                                        --Repaired with technic workshop
+    tool_repair = false,                                                --Allows to repair two items of the same type by combining them on the crafting grid
 
     --Weapon configuration
-    hitscan = true,                                                     --Instantly trace shots to the target, use in weapons like firearms, lasers, etc.
+    hitscan = true,                                                     --Instantly trace shots to the target, use in weapons like firearms, lasers, etc
     distance = 100,                                                     --Distance in nodes in which hitscan traces will connect to the target
     penetration = 2,                                                    --How many nodes/objects hitscan trace will go through before stopping (damaging each one)
-    liquids_stop = false,                                               --Should hitscan traces travel through liquid nodes.
+    liquids_stop = false,                                               --Should hitscan traces or projectiles travel through liquid nodes
     damage = 15,                                                        --Damage per projectile/hitscan trace
     shot_amount = 1,                                                    --Total amount of projectiles or hitscan traces per shot
     spread = 0.02,                                                      --Random deviation of direction of every particle or hitscan trace from center of the screen
@@ -103,7 +105,7 @@ bweapons.register_weapon({
                                                                         --with projectile self provides a projectile entity. Depending on occasion, target may reference a node or an object
     on_timeout = function (self)
             print("Projectile timeout")
-        end,                                                            --Custom function called on a projectile timeout. Self refers to the projectile.
+        end,                                                            --Custom function called on a projectile timeout. Self refers to the projectile
 
     --Recipes
     recipe={
@@ -159,6 +161,7 @@ bweapons.register_weapon({
     ammo_per_shot = 1,
     return_item = "default:stone",
     unbreakable = false,
+    tool_repair = false,
     hitscan = true,
     distance = 100,
     penetration = 2,

@@ -282,6 +282,7 @@ function bweapons.register_weapon(def)
     local trail_particle_amount = def.trail_particle_amount or 4
     local trail_particle_displacement = def.trail_particle_displacement or 0.5
     local trail_particle_glow = 0
+    local tool_groups = {}
 
     if def.flare_glow then
         flare_glow = 14
@@ -294,7 +295,7 @@ function bweapons.register_weapon(def)
     if def.hit_flare_glow then
         hit_flare_glow = 14
     end
-    
+
     if def.trail_particle_glow then
         trail_particle_glow = 14
     end
@@ -309,7 +310,7 @@ function bweapons.register_weapon(def)
     local projectile_visual_size = def.projectile_visual_size or 1
 
     local on_refill = nil
-    local wear_represents = nil
+    local wear_represents = "mechanical_wear"
 
     if minetest.get_modpath("technic") then
         on_refill = technic.refill_RE_charge
@@ -317,6 +318,12 @@ function bweapons.register_weapon(def)
 
     if def.technic_powered then
         wear_represents = "technic_RE_charge"
+    elseif def.unbreakable then
+        wear_represents = "bweapons_custom_charge"
+    end
+
+    if not def.tool_repair then
+        tool_groups["disable_repair"] = 1
     end
 
     --Make a projectile definition and register projectile for the weapon, if hitscan=false
@@ -368,6 +375,7 @@ function bweapons.register_weapon(def)
         inventory_image = def.texture,
         wield_scale = 1,
         stack_max = 1,
+        groups = tool_groups,
         wear_represents = wear_represents,
         on_refill = on_refill,
         on_use = function(itemstack, user, pointed_thing)
