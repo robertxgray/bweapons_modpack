@@ -107,7 +107,7 @@ local function register_projectile(def)
                 if node and minetest.registered_nodes[node.name] and (minetest.registered_nodes[node.name].walkable or
                 def.liquids_stop and minetest.registered_nodes[node.name].liquidtype ~= "none") then
                     if def.aoe then
-                        bweapons.damage_aoe(def.damage, self.owner, self.previous_pos, def.aoe_radius)
+                        bweapons.damage_aoe(def.damage, self.owner, target.intersection_point, def.aoe_radius)
                     end
                     if def.on_hit then
                         def.on_hit(self, target)
