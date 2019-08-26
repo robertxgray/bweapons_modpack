@@ -128,13 +128,6 @@ Bigger values means better detection, but also the projectile would stop further
 actual target.
 ```
 
-# Global bweapons damage multiplier
-bweapons_damage_multiplier (Bweapons damage multiplier) float 1
-
-# Distance from projectile to which raycast is performed each server step
-bweapons_projectile_raycast_distance (Projectile raycast distance) float 0.5 0 5
-
-
 ## License
 All code is GPLv3 [link to the license](https://www.gnu.org/licenses/gpl-3.0.en.html)  
 All resources not covered in the "credits" section are licensed under CC BY 4.0 [link to the license](https://creativecommons.org/licenses/by/4.0/legalcode)  
