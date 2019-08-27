@@ -43,6 +43,7 @@ bweapons.register_weapon({
             local target_pos = minetest.get_pointed_thing_position(target, false)
             local node = minetest.get_node_or_nil(target_pos)
             if node and not minetest.registered_nodes[node.name].walkable then return end
+            if minetest.is_protected(target_pos, projectile.owner:get_player_name()) then return end
             local air_pos = minetest.find_node_near(target_pos, 2, "air", true)
             if air_pos ~= nil then
                 local delta = {x = target_pos.x - air_pos.x, y = target_pos.y - air_pos.y, z = target_pos.z - air_pos.z}

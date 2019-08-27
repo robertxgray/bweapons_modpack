@@ -5,11 +5,6 @@ local fireball_blacklist = {
     "default:river_water_flowing",
 }
 
-local iceshard_whitelist = {
-    "default:water_source",
-    "default:river_water_source",
-}
-
 bweapons.register_weapon({
     name = "bweapons_magic_pack:tome_fireball",
     description = "Tome Of Fireball",
@@ -57,11 +52,13 @@ bweapons.register_weapon({
         if target.type == "node" then
             local target_pos = minetest.get_pointed_thing_position(target, false)
             local node = minetest.get_node_or_nil(target_pos)
+            if minetest.is_protected(target_pos, projectile.owner:get_player_name()) then return end
             for _,v in pairs(fireball_blacklist) do
                 if node and node.name == v then return end
             end
             local air_pos = minetest.find_node_near(target_pos, 2, "air", true)
             if air_pos ~= nil then
+                if minetest.is_protected(air_pos, projectile.owner:get_player_name()) then return end
                 local delta = {x = target_pos.x - air_pos.x, y = target_pos.y - air_pos.y, z = target_pos.z - air_pos.z}
                 local rotation = minetest.dir_to_wallmounted(delta)
                 minetest.set_node(air_pos, {name = "fire:basic_flame", nil, param2 = rotation})
@@ -125,11 +122,13 @@ bweapons.register_weapon({
             local target_pos = minetest.get_pointed_thing_position(target, false)
             local node = minetest.get_node_or_nil(target_pos)
             if not node then return end
-            for _,v in pairs(iceshard_whitelist) do
-                if node.name == v then
-                    minetest.set_node(target_pos, {name = "default:ice"})
-                    break
-                end
+            if minetest.is_protected(target_pos, projectile.owner:get_player_name()) then return end
+            if node.name == "default:water_source" or node.name == "default:river_water_source" then
+                minetest.set_node(target_pos, {name = "default:ice"})
+            elseif node.name == "default:lava_source" then
+                minetest.set_node(target_pos, {name = "default:obsidian"})
+            elseif node.name == "default:lava_flowing" then
+                minetest.set_node(target_pos, {name = "default:stone"})
             end
         end
     end,
@@ -185,6 +184,17 @@ bweapons.register_weapon({
     projectile_texture = "bweapons_magic_pack_electrosphere_projectile.png",
     projectile_glow = true,
     projectile_visual_size = 1.3,
+    on_hit = function (projectile, target)
+        if target.type == "node" then
+            local target_pos = minetest.get_pointed_thing_position(target, false)
+            local node = minetest.get_node_or_nil(target_pos)
+            if not node then return end
+            if minetest.is_protected(target_pos, projectile.owner:get_player_name()) then return end
+            if node.name == "default:sand" or node.name == "default:silver_sand" or node.name == "default:desert_sand" then
+                minetest.set_node(target_pos, {name = "default:glass"})
+            end
+        end
+    end,
     recipe={
         {
             {"default:diamond", "default:obsidian", "default:diamond"},
@@ -352,6 +362,16 @@ bweapons.register_weapon({
     projectile_texture = "bweapons_magic_pack_void_projectile.png",
     projectile_glow = true,
     projectile_visual_size = 1.5,
+    on_hit = function (projectile, target)
+        if target.type == "node" then
+            local target_pos = minetest.get_pointed_thing_position(target, false)
+            local node = minetest.get_node_or_nil(target_pos)
+            if not node then return end
+            if minetest.is_protected(target_pos, projectile.owner:get_player_name()) then return end
+            if minetest.registered_nodes[node.name].diggable == false then return end
+            minetest.set_node(target_pos, {name = "air"})
+        end
+    end,
     recipe={
         {
             {"default:obsidian", "magic_materials:arcanite_crystal", "default:obsidian"},
