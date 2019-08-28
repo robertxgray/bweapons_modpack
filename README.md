@@ -44,6 +44,7 @@ Mods:
 
 - default  
 - [technic](https://github.com/minetest-mods/technic)  (optional, but strongly recommended)  
+- [mana](https://repo.or.cz/minetest_mana.git) (optional, but strongly recommended)  
 - [magic_materials](https://github.com/ClockGen/magic_materials) (optional, but strongly recommended)  
 
 ## Recommended mods
