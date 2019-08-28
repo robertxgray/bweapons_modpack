@@ -234,17 +234,17 @@ function bweapons.register_weapon(def)
 
     --Stop registration if mod requirements are not met or not enough definition fields
     if def.has_durability and not minetest.get_modpath("technic") and def.requires_technic then
-        print("Technic modpack is required for technic-powered weapons!")
+        minetest.log("error", "Technic modpack is required for technic-powered weapons!")
         return
     end
 
     if def.mana_per_use and not minetest.get_modpath("mana") then
-        print("Mana required for mana-based weapons!")
+        minetest.log("error", "Mana required for mana-based weapons!")
         return
     end
 
     if def.name == nil or def.description == nil or def.texture == nil then
-        print("Missing fields in weapon registration! Check api documentation")
+        minetest.log("error", "Missing fields in weapon registration! Check api documentation")
         return
     end
 
