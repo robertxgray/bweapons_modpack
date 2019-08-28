@@ -33,7 +33,7 @@ end
 function bweapons.damage_aoe(damage, puncher, pos, radius)
     local targs = minetest.get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, radius)
     for _,t in pairs(targs) do
-        local dist=math.sqrt(((t:getpos().x-pos.x)^2)+((t:getpos().y-pos.y)^2)+((t:getpos().z-pos.z)^2))
+        local dist=math.sqrt(((t:get_pos().x-pos.x)^2)+((t:get_pos().y-pos.y)^2)+((t:get_pos().z-pos.z)^2))
         local DistDamage=damage/math.max(dist, 1)
         t:punch(puncher, 1.0, {
             full_punch_interval=1.0,
@@ -116,7 +116,7 @@ local function register_projectile(def)
                 end
             elseif target and target.type == "object" then
                 if def.aoe then
-                    bweapons.damage_aoe(def.damage, self.owner, self.previous_pos, def.aoe_radius)
+                    bweapons.damage_aoe(def.damage, self.owner, target.intersection_point, def.aoe_radius)
                 else
                     target.ref:punch(self.owner, 1.0, {
                     full_punch_interval=1.0,
