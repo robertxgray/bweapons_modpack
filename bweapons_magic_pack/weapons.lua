@@ -65,11 +65,11 @@ bweapons.register_weapon({
             end
         end
     end,
-    recipe={
+    recipe = {
         {
-            {"default:mese_crystal", "default:obsidian", "default:mese_crystal"},
-            {"default:obsidian", "magic_materials:enchanted_book", "default:obsidian"},
-            {"default:mese_crystal", "default:obsidian", "default:mese_crystal"}
+            {"", "magic_materials:fire_rune", ""},
+            {"", "magic_materials:enchanted_book", ""},
+            {"", "", ""}
         },
     },
 })
@@ -132,11 +132,11 @@ bweapons.register_weapon({
             end
         end
     end,
-    recipe={
+    recipe = {
         {
-            {"default:diamond", "default:ice", "default:diamond"},
-            {"default:ice", "magic_materials:enchanted_book", "default:ice"},
-            {"default:diamond", "default:ice", "default:diamond"}
+            {"", "magic_materials:ice_rune", ""},
+            {"", "magic_materials:enchanted_book", ""},
+            {"", "", ""}
         },
     },
 })
@@ -195,12 +195,12 @@ bweapons.register_weapon({
             end
         end
     end,
-    recipe={
+    recipe = {
         {
-            {"default:diamond", "default:obsidian", "default:diamond"},
-            {"default:obsidian", "magic_materials:enchanted_book", "default:obsidian"},
-            {"default:diamond", "default:obsidian", "default:diamond"}
-        },
+            {"", "magic_materials:storm_rune", ""},
+            {"", "magic_materials:enchanted_book", ""},
+            {"", "", ""}
+        }
     },
 })
 
@@ -251,11 +251,11 @@ bweapons.register_weapon({
     projectile_texture = "bweapons_magic_pack_magic_projectile.png",
     projectile_glow = true,
     projectile_visual_size = 2,
-    recipe={
+    recipe = {
         {
-            {"default:diamond", "magic_materials:egerum_crystal", "default:diamond"},
-            {"magic_materials:egerum_crystal", "magic_materials:enchanted_staff", "magic_materials:egerum_crystal"},
-            {"default:diamond", "magic_materials:egerum_crystal", "default:diamond"}
+            {"", "magic_materials:energy_rune", ""},
+            {"", "magic_materials:enchanted_staff", ""},
+            {"", "default:diamond", ""}
         },
     },
 })
@@ -306,11 +306,11 @@ bweapons.register_weapon({
     projectile_texture = "bweapons_magic_pack_light_projectile.png",
     projectile_glow = true,
     projectile_visual_size = 3,
-    recipe={
+    recipe = {
         {
-            {"default:mese_crystal", "default:gold_ingot", "default:mese_crystal"},
-            {"default:gold_ingot", "magic_materials:enchanted_staff", "default:gold_ingot"},
-            {"default:mese_crystal", "default:gold_ingot", "default:mese_crystal"}
+            {"", "magic_materials:light_rune", ""},
+            {"", "magic_materials:enchanted_staff", ""},
+            {"", "default:gold_ingot", ""}
         },
     },
 })
@@ -372,11 +372,11 @@ bweapons.register_weapon({
             minetest.set_node(target_pos, {name = "air"})
         end
     end,
-    recipe={
+    recipe = {
         {
-            {"default:obsidian", "magic_materials:arcanite_crystal", "default:obsidian"},
-            {"magic_materials:arcanite_crystal", "magic_materials:enchanted_staff", "magic_materials:arcanite_crystal"},
-            {"default:obsidian", "magic_materials:arcanite_crystal", "default:obsidian"}
+            {"", "magic_materials:void_rune", ""},
+            {"", "magic_materials:enchanted_staff", ""},
+            {"", "default:obsidian", ""}
         },
     },
 })
