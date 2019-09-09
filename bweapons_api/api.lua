@@ -289,6 +289,12 @@ function bweapons.register_weapon(def)
     local trail_particle_glow = 0
     local tool_groups = {}
 
+    local craft_shape = "shaped"
+
+    if def.shapeless_recipe then
+        craft_shape = "shapeless"
+    end
+
     if def.flare_glow then
         flare_glow = 14
     end
@@ -631,9 +637,10 @@ function bweapons.register_weapon(def)
     if def.recipe then
         for _,v in pairs(def.recipe) do
             minetest.register_craft({
-            type = "shaped",
+            type = craft_shape,
             output = def.name,
             recipe = v,
+            replacements = def.replacements,
             })
         end
     end

@@ -109,6 +109,7 @@ bweapons.register_weapon({
         end,                                                            --Custom function called on a projectile timeout. Self refers to the projectile
 
     --Recipes
+    shapeless_recipe = false,                                           --Should the recipe be shapeless
     recipe={
         {
             {'moreores:tin_ingot',            'technic:diamond_drill_head', 'moreores:tin_ingot'},
@@ -121,6 +122,7 @@ bweapons.register_weapon({
             {'',                              'technic:red_energy_crystal', 'default:copper_ingot'}
         }
     },                                                                  --Recipes to be registered for this weapon. Table may contain multiple recipes
+    replacements = {{"bucket:bucket_water", "bucket:bucket_empty"}},    --Replacements for recipe items
 })
 
 
