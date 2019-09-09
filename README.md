@@ -46,6 +46,7 @@ Mods:
 - [technic](https://github.com/minetest-mods/technic)  (optional, but strongly recommended)  
 - [mana](https://repo.or.cz/minetest_mana.git) (optional, but strongly recommended)  
 - [magic_materials](https://github.com/ClockGen/magic_materials) (optional, but strongly recommended)  
+- [gadgets_modpack](https://github.com/ClockGen/gadgets_modpack) (optional, but strongly recommended, counterpart of bweapons, together forms a combat and status effect system)  
 
 ## Recommended mods
 - [craftguide](https://github.com/minetest-mods/craftguide), to see available crafting recipes for new items
