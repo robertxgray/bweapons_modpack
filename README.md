@@ -8,15 +8,15 @@ Content packs are split into separate mods, so if you don't like something (for 
 
 Full list of requirements:
 
-- default  
-- [technic](https://github.com/minetest-mods/technic)  (optional, but strongly recommended)  
+- default, tnt (parts of minetest_game, default)
+- [technic](https://github.com/minetest-mods/technic) (optional, but strongly recommended)
+- [mana](https://repo.or.cz/minetest_mana.git) (optional, but strongly recommended)
+- [magic_materials](https://github.com/ClockGen/magic_materials) (dependency for bweapons_magic_pack)
 - [basic_materials](https://gitlab.com/VanessaE/basic_materials) (dependency of technic, and also for bweapons_firearms_pack)
-- [mana](https://repo.or.cz/minetest_mana.git) (optional, but strongly recommended)  
-- [magic_materials](https://github.com/ClockGen/magic_materials) (optional, but strongly recommended)  
 
 ## Recommended mods
-- [gadgets_modpack](https://github.com/ClockGen/gadgets_modpack) (optional, but strongly recommended, counterpart of bweapons, together forms a combat and status effect system)  
-- [craftguide](https://github.com/minetest-mods/craftguide), to see available crafting recipes for new items
+- [gadgets_modpack](https://github.com/ClockGen/gadgets_modpack) (Together with gadgets_modpack forms a single combat, status effect and magic system)
+- [craftguide](https://github.com/minetest-mods/craftguide) (explore crafting recipes of the new items)
 
 # List of mods in modpack
 - ### bweapons_api
@@ -26,6 +26,7 @@ Full list of requirements:
     **Requires** : default, [technic](https://github.com/minetest-mods/technic)  (optional), [mana](https://repo.or.cz/minetest_mana.git) (optional)
 
 - ### bweapons_firearms_pack
+
     Pack of weapons, consisting of:
 
     - Pump-action shotgun
@@ -37,6 +38,7 @@ Full list of requirements:
     **Requires** : default, tnt, [basic_materials](https://gitlab.com/VanessaE/basic_materials), [technic](https://github.com/minetest-mods/technic) 
 
 - ### bweapons_bows_pack
+
     Pack of weapons, consisting of:
 
     - Wooden bow
@@ -45,6 +47,7 @@ Full list of requirements:
     **Requires** : default
 
 - ### bweapons_hitech_pack
+
     Pack of weapons, consisting of:
 
     - Particle Blaster
@@ -56,6 +59,7 @@ Full list of requirements:
     **Requires** : default, tnt, [basic_materials](https://gitlab.com/VanessaE/basic_materials), [technic](https://github.com/minetest-mods/technic) 
 
 - ### bweapons_magic_pack
+
     Pack of weapons, consisting of:
 
     - Tome Of Fireball
@@ -68,6 +72,7 @@ Full list of requirements:
     **requires**: default, [magic_materials](https://github.com/ClockGen/magic_materials) 
 
 - ### bweapons_utility_pack
+
     Pack of utilities, consisting of:
 
     - Torch bow
@@ -86,6 +91,8 @@ All interactions respect area protection
 
 Railgun, apart from requiring ammo also needs to be charged with technic EUs.  
 
+Magic tomes use mana and don't wear down, wear bar of staves represent their "charge", and they can be recharged by combining them with februm crystals on the crafting grid.
+
 ## Settingtypes
 Modpack provides some settings, accessible via "Settings->All Settings->Mods->bweapons_api  
 You can also put these settings directly to your minetest.conf
@@ -103,22 +110,6 @@ Length of a projectile raycast, performed on each server step, used for collisio
 Bigger values means better detection, but also the projectile would stop further from the
 actual target.
 ```
-
-## API Features
-
-- Projectile and hitscan based weapons
-- Integration with technic
-- Integration with Wuzzy's mana mod
-- Custom user-defined functions like on_hit(), on_timeout(), on_fire()
-- Wide customization of visuals, particle effects and sounds
-- Different fire modes (multiple projectiles/traces, salvos, node and entity penetration)
-- Wide customization of projectile or hitscan behavior, visuals and effects
-- Easy to use registration function with just one definition parameter table
-- Different wear modes (unbreakable, with custom wear, or powered by technic EUs)
-- Repair options (repair/recharge weapons with custom items, enable toolrepair recipe)
-- Return item options (drop items on hit, return items to the inventory, etc)
-- Interoperability of every option, with big room for experimentation
-- Many other small things
 
 ## Making your own weapons
 To define weapons in your own mod you need to call `bweapons.register_weapon(def)`
