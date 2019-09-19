@@ -2,6 +2,8 @@
 Bweapons aims at providing a full progression of ranged weapons, from primitive bows to sci-fi rifles or magic staves and spellbooks. Modpack also provides an API to easily make your own weapons.  
 Content packs are split into separate mods, so if you don't like something (for example you only want to leave magic), you can simply disable them.  
 
+![Screenshot](screenshot.png)
+
 ## Requirements
 **Minetest 5.0.0+**  
 **Minetest_game 5.0.0+**  
