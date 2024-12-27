@@ -406,27 +406,60 @@ function bweapons.register_weapon(def)
             end
 
             if def.has_durability then
-                local meta = minetest.deserialize(itemstack:get_metadata())
-                if
-                def.requires_technic and not meta or
-                def.requires_technic and meta.charge < technic_charge_per_use or
-                not def.requires_technic and def.custom_charge and (65535 - itemstack:get_wear()) < (65535 / uses)
-                then
+                local reload = false
+
+                if def.requires_technic then
+                    -- Technic Plus Beta
+                    if technic.use_RE_charge ~= nil then
+                        if not technic.use_RE_charge(itemstack, technic_charge_per_use) then
+                            reload = true
+                        end
+                    else
+                        -- Technic Plus
+                        local meta = itemstack:get_meta()
+                        local old_metadata = minetest.deserialize(meta:get_string(""))
+                        local charge = nil
+                        if old_metadata then
+                            charge = old_metadata.charge
+                        end
+                        -- Technic
+                        if not charge then
+                            charge = meta:get_int("technic:charge")
+                        end
+
+                        if charge < technic_charge_per_use then
+                            reload = true
+                        else
+                            if not technic.creative_mode then
+                                charge = charge - technic_charge_per_use
+                                technic.set_RE_wear(itemstack, charge, technic_charge)
+                                if old_metadata and old_metadata.charge then
+                                    old_metadata.charge = charge
+                                    meta:set_string("", minetest.serialize(old_metadata))
+                                else
+                                    meta:set_int("technic:charge", charge)
+                                end
+                            end
+                        end
+                    end
+
+                -- Not Technic
+                else
+                    if def.custom_charge and (65535 - itemstack:get_wear()) < (65535 / uses) then
+                        reload = true
+                    else
+                        local wear = itemstack:get_wear()
+                        wear = wear + (65535/uses)
+                        if def.custom_charge and wear > 65535 then wear = 65535 end
+                        itemstack:set_wear(wear)
+                    end
+                end
+
+                if reload then
                     if def.reload_sound then
                         minetest.sound_play(def.reload_sound, {object=user, gain=reload_sound_gain, max_hear_distance=2*64})
                     end
                     return
-                end
-
-                if def.requires_technic then
-                    meta.charge = meta.charge - technic_charge_per_use
-                    technic.set_RE_wear(itemstack, meta.charge, technic_charge)
-                    itemstack:set_metadata(minetest.serialize(meta))
-                else
-                    local wear = itemstack:get_wear()
-                    wear = wear + (65535/uses)
-                    if def.custom_charge and wear > 65535 then wear = 65535 end
-                    itemstack:set_wear(wear)
                 end
             end
 
